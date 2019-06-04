@@ -55,7 +55,10 @@ public class DatasetInitializer {
 		}
 		return null;
 	}
+	private static void parse(String data) {
+		
+	}
 	public static void initialize() {
-		fetch();
+		parse(fetch());
 	}
 }
