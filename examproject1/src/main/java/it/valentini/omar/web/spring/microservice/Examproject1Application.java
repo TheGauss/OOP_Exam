@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Examproject1Application {
 
 	public static void main(String[] args) {
+		DatasetHelper.initialize();
 		SpringApplication.run(Examproject1Application.class, args);
 	}
-
+	
 }

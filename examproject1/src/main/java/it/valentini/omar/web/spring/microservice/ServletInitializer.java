@@ -7,7 +7,6 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		DatasetInitializer.initialize();
 		return application.sources(Examproject1Application.class);
 	}
 
