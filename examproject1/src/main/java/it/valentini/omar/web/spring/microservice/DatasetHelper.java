@@ -10,10 +10,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -79,11 +75,6 @@ public class DatasetHelper {
 				}
 			}
 			System.out.println("Parsed dataset size: " + Dataset.size() + " rows");
-			Iterator<RiverDomain> iterator = Dataset.iterator();
-			System.out.println(iterator.next());
-			System.out.println(iterator.next());
-			System.out.println(iterator.next());
-			System.out.println(iterator.next());
 	}
 	public static void initialize() {
 		parse(fetch());
@@ -127,7 +118,7 @@ public class DatasetHelper {
 	}
 	public static JSONArray getData() {
 		// TODO Auto-generated method stub
-		Iterator dataiterator = Dataset.iterator();
+		Iterator<RiverDomain> dataiterator = Dataset.iterator();
 		JSONArray response = new JSONArray();
 		while (dataiterator.hasNext()) {
 			RiverDomain record = (RiverDomain) dataiterator.next();
@@ -137,6 +128,13 @@ public class DatasetHelper {
 			response.put(obj);
 		}
 		return response;
+	}
+	public static JSONObject getStats(String fieldname) throws FieldNotFoundException{
+		// TODO Auto-generated method stub
+		if (!RiverDomain.containsField(fieldname)) throw new FieldNotFoundException();
+		JSONObject returned = new JSONObject();
+		returned.put("Call status", "Field found");
+		return returned;
 	}
 
 }

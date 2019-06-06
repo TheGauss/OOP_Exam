@@ -3,11 +3,14 @@ package it.valentini.omar.web.spring.microservice;
 import java.util.ArrayList;
 
 public class RiverDomain {
-	private Person person;
+	private String Name;
+	private String Surname;
 	private String company;
 	private String locationName;
 	private String locationCode;
-	private BodyofWater water;
+	private String BodyofWaterName;
+	private float surface;
+	private float surface2;
 	int duration;
 	RiverDomain(String[] data)throws MalformedRowException{
 		if (data.length<9) throw new MalformedRowException();
@@ -26,27 +29,24 @@ public class RiverDomain {
 		if ((data[0].length()<2 || data[1].length()<2) && data[2].length()<2) throw new MalformedRowException();
 		if (data[5].length()<2) throw new MalformedRowException();
 		//Actually initializing the river domain
-		if (data[0].length()>2 && data[1].length()>2)person = new Person(data[0], data[1]);
-		else person = null;
+		if (data[0].length()>2 && data[1].length()>2) {
+			Name = data[0];
+			Surname = data[1];
+		}
+		else {
+			Name = null;
+			Surname = null;
+		}
 		if (data[2].length()>2) company = data[2];
 		else company = null;
 		if (data[3].length()>2) locationCode = data[3];
 		else locationCode = null;
 		if (data[4].length()>2) locationName = data[4];
 		else locationName = null;
-		water = new BodyofWater(data[5], DatasetHelper.numberFinder(data[6]), DatasetHelper.numberFinder(data[7]));
+		BodyofWaterName = data[5];
+		surface = DatasetHelper.numberFinder(data[6]);
+		surface2 = DatasetHelper.numberFinder(data[7]);
 		duration = (int) DatasetHelper.numberFinder(data[8]);
-	}
-	@Override
-	public String toString() {
-		String returned = "River Domain: { ";
-		if (person != null) returned += person.toString() + ", ";
-		if (company != null) returned += " Company: " + company + ", ";
-		if (locationCode != null) returned += " Location code: " + locationCode + ", ";
-		if (locationName != null) returned += " Location name: " + locationName + ", ";
-		if (duration != 0) returned += " Duration: " + duration + "}";
-		else returned += " Duration: not determinated}";
-		return returned;
 	}
 	private boolean containsCompanyName(String a) {
 		if(a.contains("SRL") || a.contains("S.R.L.") || a.contains("s.r.l.") || a.contains("srl")) return true;
@@ -57,11 +57,14 @@ public class RiverDomain {
 	public static ArrayList<String[]> getMetadata() {
 		// TODO Auto-generated method stub
 		ArrayList<String[]> list = new ArrayList<>();
-		list.addAll(Person.getMetadata());
+		list.add(DatasetHelper.metadataRow("Name", "Nome", "String"));
+		list.add(DatasetHelper.metadataRow("Surname", "Cognome", "String"));
 		list.add(DatasetHelper.metadataRow("Company", "Ragione Sociale", "String"));
 		list.add(DatasetHelper.metadataRow("locationCode", "ID_Comune", "String"));
 		list.add(DatasetHelper.metadataRow("locatioName", "Comune del bene oggetto di Concessione", "String"));
-		list.addAll(BodyofWater.getMetadata());
+		list.add(DatasetHelper.metadataRow("BodyofWater/Name", "Denominazione_Luogo", "String"));
+		list.add(DatasetHelper.metadataRow("BodyofWater/Surface", "superficie", "float"));
+		list.add(DatasetHelper.metadataRow("BodyofWater/Surface2", "superficie specchio acqua", "float"));
 		list.add(DatasetHelper.metadataRow("duration", "Durata concessione", "int"));
 		return list;
 	}
@@ -75,16 +78,37 @@ public class RiverDomain {
 	public ArrayList<String[]> getData() {
 		// TODO Auto-generated method stub
 		ArrayList<String[]> data = new ArrayList<>();
-		if (person != null) data.addAll(person.getData());
+		if (Name != null) {
+			data.add(dataObjBuilder("Name", Name));
+			data.add(dataObjBuilder("Surname", Surname));
+		}
 		if (company != null) data.add(dataObjBuilder("Company", company));
 		if (locationCode != null) data.add(dataObjBuilder("locationCode", locationCode));
 		if (locationName != null) data.add(dataObjBuilder("locationName", locationName));
-		data.addAll(water.getData());
+		data.add(RiverDomain.dataObjBuilder("BodyofWaterName", BodyofWaterName));
+		if (surface>0)data.add(RiverDomain.dataObjBuilder("Surface", surface +""));
+		if (surface2>0)data.add(RiverDomain.dataObjBuilder("Surface2", surface2 +""));
 		if (duration>0) data.add(dataObjBuilder("Duration", duration+""));
 		return data;
 	}
 	public static String[] dataObjBuilder(String key, String value) {
 		String[] temp = {key, value};
 		return temp;
+	}
+	public static boolean containsField(String string) {
+		// TODO Auto-generated method stub
+		switch(string) {
+			case "name":
+			case "surname":
+			case "company":
+			case "locationname":
+			case "locationcode":
+			case "bodyofwatername":
+			case "surface":
+			case "surface2":
+			case "duration":
+				return true;
+		}
+		return false;
 	}
 }
