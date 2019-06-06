@@ -8,7 +8,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MainController {
 	@GetMapping("/metadata")
 	@ResponseBody
-	public String getMetadata() {
+	public static String getMetadata() {
 		return DatasetHelper.getMetadata().toString();
+	}
+	@GetMapping("/data")
+	@ResponseBody
+	public static String getData() {
+		return DatasetHelper.getData().toString();
+	}
+	@GetMapping("/stats")
+	@ResponseBody
+	public static String getStats() {
+		return "Work in progress";
 	}
 }

@@ -1,6 +1,7 @@
 package it.valentini.omar.web.spring.microservice;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Person {
 	private String Name;
@@ -53,6 +54,13 @@ public class Person {
 		ArrayList<String[]> list = new ArrayList<>();
 		list.add(DatasetHelper.metadataRow("Person.Name", "Nome", "String"));
 		list.add(DatasetHelper.metadataRow("Person.Surname", "Cognome", "String"));
+		return list;
+	}
+	public ArrayList<String[]> getData() {
+		// TODO Auto-generated method stub
+		ArrayList<String[]> list = new ArrayList<>();
+		list.add(RiverDomain.dataObjBuilder("Name", Name));
+		list.add(RiverDomain.dataObjBuilder("Surname", Surname));
 		return list;
 	}
 }

@@ -125,5 +125,18 @@ public class DatasetHelper {
 		temp[2] = Type;
 		return temp;
 	}
+	public static JSONArray getData() {
+		// TODO Auto-generated method stub
+		Iterator dataiterator = Dataset.iterator();
+		JSONArray response = new JSONArray();
+		while (dataiterator.hasNext()) {
+			RiverDomain record = (RiverDomain) dataiterator.next();
+			ArrayList<String[]> recordvalues = record.getData();
+			JSONObject obj = new JSONObject();
+			for (int i = 0; i <recordvalues.size(); i ++) obj.put(recordvalues.get(i)[0], recordvalues.get(i)[1]);
+			response.put(obj);
+		}
+		return response;
+	}
 
 }

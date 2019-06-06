@@ -72,4 +72,19 @@ public class RiverDomain {
 		temp[2] = C;
 		return temp;
 	}
+	public ArrayList<String[]> getData() {
+		// TODO Auto-generated method stub
+		ArrayList<String[]> data = new ArrayList<>();
+		if (person != null) data.addAll(person.getData());
+		if (company != null) data.add(dataObjBuilder("Company", company));
+		if (locationCode != null) data.add(dataObjBuilder("locationCode", locationCode));
+		if (locationName != null) data.add(dataObjBuilder("locationName", locationName));
+		data.addAll(water.getData());
+		if (duration>0) data.add(dataObjBuilder("Duration", duration+""));
+		return data;
+	}
+	public static String[] dataObjBuilder(String key, String value) {
+		String[] temp = {key, value};
+		return temp;
+	}
 }

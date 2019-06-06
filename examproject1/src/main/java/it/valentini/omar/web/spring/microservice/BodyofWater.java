@@ -32,9 +32,17 @@ public class BodyofWater {
 	public static ArrayList<String[]> getMetadata() {
 		// TODO Auto-generated method stub
 		ArrayList<String[]> list = new ArrayList<>();
-		list.add(DatasetHelper.metadataRow("BodyofWater.Name", "Denominazione_Luogo", "String"));
-		list.add(DatasetHelper.metadataRow("BodyofWater.Surface", "superficie", "float"));
-		list.add(DatasetHelper.metadataRow("BodyofWater.Surface", "superficie specchio acqua", "float"));
+		list.add(DatasetHelper.metadataRow("BodyofWater/Name", "Denominazione_Luogo", "String"));
+		list.add(DatasetHelper.metadataRow("BodyofWater/Surface", "superficie", "float"));
+		list.add(DatasetHelper.metadataRow("BodyofWater/Surface2", "superficie specchio acqua", "float"));
+		return list;
+	}
+	public ArrayList<String[]> getData() {
+		// TODO Auto-generated method stub
+		ArrayList<String[]> list = new ArrayList<>();
+		list.add(RiverDomain.dataObjBuilder("BodyofWater/Name", Name));
+		if (Surface>0)list.add(RiverDomain.dataObjBuilder("BodyofWater/Surface", Surface +""));
+		if (Surface2>0)list.add(RiverDomain.dataObjBuilder("BodyofWater/Surface2", Surface2 +""));
 		return list;
 	}
 }
