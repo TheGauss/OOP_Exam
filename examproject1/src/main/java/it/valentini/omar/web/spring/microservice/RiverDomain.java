@@ -93,20 +93,31 @@ public class RiverDomain {
 		if (duration>0) data.put("Duration", duration);
 		return data;
 	}
-	public static boolean containsField(String string) {
-		// TODO Auto-generated method stub
-		switch(string) {
-			case "name":
-			case "surname":
-			case "company":
-			case "locationname":
-			case "locationcode":
-			case "bodyofwatername":
-			case "surface":
-			case "surface2":
-			case "duration":
-				return true;
-		}
-		return false;
+	public String getName() {
+		return Name;
+	}
+	public String getSurname() {
+		return Surname;
+	}
+	public String getCompany() {
+		return company;
+	}
+	public String getLocationname() {
+		return locationName;
+	}
+	public String getLocationcode() {
+		return locationCode;
+	}
+	public String getBodyofwatername() {
+		return BodyofWaterName;
+	}
+	public float getSurface() {
+		return surface;
+	}
+	public float getSurface2() {
+		return surface2;
+	}
+	public int getDuration() {
+		return duration;
 	}
 }

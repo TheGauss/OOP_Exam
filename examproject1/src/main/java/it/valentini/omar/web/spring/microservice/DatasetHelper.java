@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 
 
 public class DatasetHelper {
@@ -131,10 +133,72 @@ public class DatasetHelper {
 	}
 	public static Map<String, Object> getStats(String fieldname) throws FieldNotFoundException{
 		// TODO Auto-generated method stub
-		if (!RiverDomain.containsField(fieldname)) throw new FieldNotFoundException();
 		HashMap<String, Object> returned = new HashMap<>();
-		returned.put("Call status", "Field found");
-		return returned;
+		returned.put("field", fieldname);
+		try {
+			java.lang.reflect.Method method = RiverDomain.class.getMethod("get" + fieldname.substring(0, 1).toUpperCase() + fieldname.substring(1));
+			Iterator<RiverDomain> iterator = Dataset.iterator();
+			RiverDomain record = iterator.next();
+				Object obj = method.invoke(record,(Object[]) null);
+				if (obj instanceof Number) {
+					double total = 0, min = Double.MIN_VALUE, max = Double.MAX_VALUE;
+					Number number = ((Number) obj).doubleValue();
+					double value = number.doubleValue();
+					ArrayList<Double> numbers = new ArrayList<>();
+					if (value != 0) {
+						numbers.add(Double.valueOf(value));
+						total += value;
+						min = value;
+						max = value;
+					}
+					while (iterator.hasNext()) {
+						record = iterator.next();
+						obj = method.invoke(record,(Object[]) null);
+						number = ((Number) obj).doubleValue();
+						value = number.doubleValue();
+						if (value!=0) {
+							numbers.add(Double.valueOf(value));
+							total+=value;
+							if (value>max) max = value;
+							if (value<min) min = value;
+						}
+					}
+					double avg = total/numbers.size();
+					returned.put("sum", total);
+					returned.put("avg", avg);
+					returned.put("max", max);
+					returned.put("min", min);
+					returned.put("count", numbers.size());
+					double var = 0;
+					for (int i = 0; i<numbers.size(); i++) {
+						double dev = numbers.get(i).doubleValue();
+						var += dev*dev;
+					}
+					var /= numbers.size();
+					returned.put("std", Math.sqrt(var));
+				}
+				else {
+					ArrayList<Object> notNulls = new ArrayList<>();
+					if (obj != null) notNulls.add(obj);
+					while (iterator.hasNext()) {
+						 record = iterator.next();
+						 obj = method.invoke(record, (Object[]) null);
+						 if (obj!=null) notNulls.add(obj);
+					}
+					if (notNulls.isEmpty()) return returned;
+					if (!(notNulls.get(0) instanceof String)) throw new FieldNotFoundException();
+					Map<String, Integer> strings = new HashMap<>();
+					for (int i = 0; i < notNulls.size(); i++) {
+						String string = (String) notNulls.get(i);
+						if (!strings.containsKey(string)) strings.put(string, 1);
+						else strings.put(string, strings.get(string).intValue()+1);
+					}
+					for (int i = 0; i < notNulls.size(); i++) returned.put((String) notNulls.get(i), strings.get(notNulls.get(i)));
+				}
+				return returned;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new FieldNotFoundException();
+		}
 	}
-
 }
