@@ -1,6 +1,8 @@
 package it.valentini.omar.web.spring.microservice;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RiverDomain {
 	private String Name;
@@ -75,25 +77,21 @@ public class RiverDomain {
 		temp[2] = C;
 		return temp;
 	}
-	public ArrayList<String[]> getData() {
+	public Map<String, Object> getData() {
 		// TODO Auto-generated method stub
-		ArrayList<String[]> data = new ArrayList<>();
+		Map<String, Object> data = new HashMap<>();
 		if (Name != null) {
-			data.add(dataObjBuilder("Name", Name));
-			data.add(dataObjBuilder("Surname", Surname));
+			data.put("Name", Name);
+			data.put("Surname", Surname);
 		}
-		if (company != null) data.add(dataObjBuilder("Company", company));
-		if (locationCode != null) data.add(dataObjBuilder("locationCode", locationCode));
-		if (locationName != null) data.add(dataObjBuilder("locationName", locationName));
-		data.add(RiverDomain.dataObjBuilder("BodyofWaterName", BodyofWaterName));
-		if (surface>0)data.add(RiverDomain.dataObjBuilder("Surface", surface +""));
-		if (surface2>0)data.add(RiverDomain.dataObjBuilder("Surface2", surface2 +""));
-		if (duration>0) data.add(dataObjBuilder("Duration", duration+""));
+		if (company != null) data.put("Company", company);
+		if (locationCode != null) data.put("locationCode", locationCode);
+		if (locationName != null) data.put("locationName", locationName);
+		data.put("BodyofWaterName", BodyofWaterName);
+		if (surface>0)data.put("Surface", surface);
+		if (surface2>0)data.put("Surface2", surface2);
+		if (duration>0) data.put("Duration", duration);
 		return data;
-	}
-	public static String[] dataObjBuilder(String key, String value) {
-		String[] temp = {key, value};
-		return temp;
 	}
 	public static boolean containsField(String string) {
 		// TODO Auto-generated method stub

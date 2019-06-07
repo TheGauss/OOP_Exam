@@ -8,8 +8,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -97,17 +99,17 @@ public class DatasetHelper {
 		//No number = return default
 		return 0;
 	}
-	public static JSONArray getMetadata() {
+	public static ArrayList<Map<String, String>> getMetadata() {
 		ArrayList<String[]> metadata = RiverDomain.getMetadata();
-		JSONArray obj = new JSONArray();
+		ArrayList<Map<String, String>> list = new ArrayList<>();
 		for (int i = 0; i<metadata.size(); i++) {
-			JSONObject temp = new JSONObject();
-			temp.put("Alias", metadata.get(i)[0]);
-			temp.put("sourceField", metadata.get(i)[1]);
-			temp.put("Type", metadata.get(i)[2]);
-			obj.put(temp);
+			HashMap<String, String> map = new HashMap<>();
+			map.put("Alias", metadata.get(i)[0]);
+			map.put("sourceField", metadata.get(i)[1]);
+			map.put("Type", metadata.get(i)[2]);
+			list.add(map);
 		}
-		return obj;
+		return list;
 	}
 	public static String[] metadataRow(String Alias, String sourceField, String Type) {
 		String[] temp = new String[3];
@@ -116,23 +118,21 @@ public class DatasetHelper {
 		temp[2] = Type;
 		return temp;
 	}
-	public static JSONArray getData() {
+	public static ArrayList<Map<String, Object>> getData() {
 		// TODO Auto-generated method stub
 		Iterator<RiverDomain> dataiterator = Dataset.iterator();
-		JSONArray response = new JSONArray();
+		ArrayList<Map<String, Object>> response = new ArrayList<>();
 		while (dataiterator.hasNext()) {
 			RiverDomain record = (RiverDomain) dataiterator.next();
-			ArrayList<String[]> recordvalues = record.getData();
-			JSONObject obj = new JSONObject();
-			for (int i = 0; i <recordvalues.size(); i ++) obj.put(recordvalues.get(i)[0], recordvalues.get(i)[1]);
-			response.put(obj);
+			Map<String, Object> recordvalues = record.getData();
+			response.add(recordvalues);
 		}
 		return response;
 	}
-	public static JSONObject getStats(String fieldname) throws FieldNotFoundException{
+	public static Map<String, Object> getStats(String fieldname) throws FieldNotFoundException{
 		// TODO Auto-generated method stub
 		if (!RiverDomain.containsField(fieldname)) throw new FieldNotFoundException();
-		JSONObject returned = new JSONObject();
+		HashMap<String, Object> returned = new HashMap<>();
 		returned.put("Call status", "Field found");
 		return returned;
 	}
