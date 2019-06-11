@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RiverDomain {
+public class RiverDomain implements Data {
 	private String Name;
 	private String Surname;
 	private String company;
@@ -56,27 +56,30 @@ public class RiverDomain {
 		if(a.contains("SNC") || a.contains("S.N.C")|| a.contains("s.n.c.") || a.contains("snc")) return true;
 		return false;
 	}
-	public static ArrayList<String[]> getMetadata() {
+	@Override
+	public ArrayList<Map<String, String>> getMetadata() {
 		// TODO Auto-generated method stub
-		ArrayList<String[]> list = new ArrayList<>();
-		list.add(DatasetHelper.metadataRow("Name", "Nome", "String"));
-		list.add(DatasetHelper.metadataRow("Surname", "Cognome", "String"));
-		list.add(DatasetHelper.metadataRow("Company", "Ragione Sociale", "String"));
-		list.add(DatasetHelper.metadataRow("locationCode", "ID_Comune", "String"));
-		list.add(DatasetHelper.metadataRow("locatioName", "Comune del bene oggetto di Concessione", "String"));
-		list.add(DatasetHelper.metadataRow("BodyofWater/Name", "Denominazione_Luogo", "String"));
-		list.add(DatasetHelper.metadataRow("BodyofWater/Surface", "superficie", "float"));
-		list.add(DatasetHelper.metadataRow("BodyofWater/Surface2", "superficie specchio acqua", "float"));
-		list.add(DatasetHelper.metadataRow("duration", "Durata concessione", "int"));
+		ArrayList<Map<String, String>> list = new ArrayList<>();
+		list.add(metadataRow("Name", "Nome", "String"));
+		list.add(metadataRow("Surname", "Cognome", "String"));
+		list.add(metadataRow("Company", "Ragione Sociale", "String"));
+		list.add(metadataRow("locationCode", "ID_Comune", "String"));
+		list.add(metadataRow("locatioName", "Comune del bene oggetto di Concessione", "String"));
+		list.add(metadataRow("BodyofWater/Name", "Denominazione_Luogo", "String"));
+		list.add(metadataRow("BodyofWater/Surface", "superficie", "float"));
+		list.add(metadataRow("BodyofWater/Surface2", "superficie specchio acqua", "float"));
+		list.add(metadataRow("duration", "Durata concessione", "int"));
 		return list;
 	}
-	public static String[] metadataRow(String A, String B, String C) {
-		String[] temp = new String[3];
-		temp[0] = A;
-		temp[1] = B;
-		temp[2] = C;
+	
+	public static Map<String, String> metadataRow(String Alias, String sourceField, String Type) {
+		Map<String, String> temp = new HashMap<>();
+		temp.put("Alias", Alias);
+		temp.put("Source Field", sourceField);
+		temp.put("Type", Type);
 		return temp;
 	}
+	@Override
 	public Map<String, Object> getData() {
 		// TODO Auto-generated method stub
 		Map<String, Object> data = new HashMap<>();
