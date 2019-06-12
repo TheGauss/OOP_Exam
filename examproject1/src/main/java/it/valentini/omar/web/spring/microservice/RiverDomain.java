@@ -14,6 +14,11 @@ public class RiverDomain implements Data {
 	private float surface;
 	private float surface2;
 	int duration;
+	/**
+	 * 
+	 * @param data each string contains a part of the data, in this order: name, surname, company, locationName, locationCode, BodyofWater, surface, surface 2, duration
+	 * @throws MalformedRowException if could not parse the data
+	 */
 	RiverDomain(String[] data)throws MalformedRowException{
 		if (data.length<9) throw new MalformedRowException();
 		//Looks like in the data set there are a lot of companies that want to be persons
@@ -72,7 +77,7 @@ public class RiverDomain implements Data {
 		return list;
 	}
 	
-	public static Map<String, String> metadataRow(String Alias, String sourceField, String Type) {
+	private static Map<String, String> metadataRow(String Alias, String sourceField, String Type) {
 		Map<String, String> temp = new HashMap<>();
 		temp.put("Alias", Alias);
 		temp.put("Source Field", sourceField);

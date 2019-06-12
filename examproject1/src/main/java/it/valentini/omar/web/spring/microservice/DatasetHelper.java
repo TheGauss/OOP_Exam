@@ -21,6 +21,14 @@ import org.json.JSONObject;
 
 
 
+/**
+ * Is supposed to take care of the access to the model (Collections that implements the Data interface)
+ * This works on the assumptions that all the objects in the collection are the same class.
+ * 
+ * It would be a template if I had any idea how make it work across multiple controllers without using statics.
+ * 
+ * @author Velentini Omar
+ */
 public class DatasetHelper{
 	private static final String DatasetJSON_URL = "https://www.dati.gov.it/api/3/action/package_show?id=a1dee418-ddd7-40c6-ad6c-7b35aa31f61a";
 	private static final String JSONkey0 = "result";
@@ -28,7 +36,7 @@ public class DatasetHelper{
 	private static final String JSONkey2 = "url";
 	private static final String UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0";
 	private static final int JSONindex = 0;
-	private static HashSet<RiverDomain> Dataset = new HashSet<>();
+	private static HashSet<Data> Dataset = new HashSet<>();
 	private static String getStreamData(String path) throws IOException {
 		HttpURLConnection connection = null;
 		try {
@@ -85,9 +93,23 @@ public class DatasetHelper{
 			}
 			System.out.println("Parsed dataset size: " + Dataset.size() + " rows");
 	}
+	/**
+	 * Initializes the data set
+	 * Do this before everything else if you don't want to get null pointer exceptions
+	 */
 	public static void initialize() {
 		parse(fetch());
 	}
+	/**
+	 * Finds the first number within a string
+	 * examples:
+	 * string: "I have 5 apples", returns 5
+	 * string: "I have five apples" returns default
+	 * string: "I have 5 apples and 4 oranges" returns 5
+	 * 
+	 * @param input String with a number
+	 * @return Returns that number, in case of multiples, the first one is returned, default: 0
+	 */
 	public static float numberFinder(String input) {
 		//Default = 0
 		if (input == null) return 0;
@@ -106,31 +128,50 @@ public class DatasetHelper{
 		//No number = return default
 		return 0;
 	}
+	/**
+	 * Returns the metadata of the whole data set
+	 * Each map represents a single field
+	 * @return
+	 */
 	public static ArrayList<Map<String, String>> getMetadata() {
 		return Dataset.iterator().next().getMetadata();
 	}
 
+	/**
+	 * Returns all the data
+	 * Each map contains the data of a single record
+	 * @return
+	 */
 	public static ArrayList<Map<String, Object>> getData() {
 		// Initializing iterator
-		Iterator<RiverDomain> dataiterator = Dataset.iterator();
+		Iterator<Data> dataiterator = Dataset.iterator();
 		ArrayList<Map<String, Object>> response = new ArrayList<>();
 		//Getting data
 		while (dataiterator.hasNext()) {
-			RiverDomain record = (RiverDomain) dataiterator.next();
+			Data record = (Data) dataiterator.next();
 			Map<String, Object> recordvalues = record.getData();
 			response.add(recordvalues);
 		}
 		return response;
 	}
+	/**
+	 * Given a field of the data set, returns statistics about that field
+	 * 
+	 * @param fieldname the name of the field
+	 * @return Always contains the name of the field ("Name" : fieldname)
+	 * For strings, contains each unique value (key) and the amount of repetitions of that value (value)
+	 * For numbers, returns min, max, sum, count, average and standard deviation
+	 * @throws FieldNotFoundException if the field is not found or if it's not possible to elaborate statistics about it
+	 */
 	public static Map<String, Object> getStats(String fieldname) throws FieldNotFoundException{
 		// Initializing returned stats
 		HashMap<String, Object> returned = new HashMap<>();
 		returned.put("field", fieldname);
 		try {
 			//Getting the first object
-			java.lang.reflect.Method method = RiverDomain.class.getMethod("get" + fieldname.substring(0, 1).toUpperCase() + fieldname.substring(1));
-			Iterator<RiverDomain> iterator = Dataset.iterator();
-			RiverDomain record = iterator.next();
+			Iterator<Data> iterator = Dataset.iterator();
+			Data record = iterator.next();
+			java.lang.reflect.Method method = record.getClass().getMethod("get" + fieldname.substring(0, 1).toUpperCase() + fieldname.substring(1));
 			Object obj = method.invoke(record,(Object[]) null);
 			//If the first object is a number, then generates number stats
 			if (obj instanceof Number) {
